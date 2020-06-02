@@ -1,0 +1,134 @@
+//pip install yfinance
+
+
+préutilisation: 
+
+pip3 install yfinance
+pip3 install lxml
+
+
+
+
+
+Liste des crypto monnaie
+https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD,tLTCBTC,tETHBTC,tXRPUSD,tBSVBTC,tEOSUSD,tZECUSD,tXMRUSD
+
+
+tBTCUSD bitcoin
+tLTCBTC litcoin
+tETHBTC eutherium
+tBSVBTC Bitcoin cashh
+tEOSUSD EOS
+tZECUSD Zcash
+tXMRUSD Monero
+tXRPUSD Ripple
+
+liste des indices boursiers :
+^FCHI	CAC 40
+^DJI	Dow Jones	
+^IXIC	Nasdaq Le Nasdaq composite (National Association of Securities Dealers Automated
+^N225	Nikkei 225
+^FTSE	FTSE 100 Le FTSE 100 (Financial Times Stock Exchange) : créé en 1983 avec une base de 1000 points, le "Footsie" est composé des 100 entreprises les plus importantes cotées à la Bourse de Londres.
+^GSPC	S&P 500 Le S&P 500 (Standard and Poor's) : créé en 1943 avec une base de 10 points, le S&P500 est composé de 500 valeurs cotées à la Bourse de New-York (NYSE). Jugé plus représentatif par les professionnels que le DJ, les titres qui composent l'indice représentent les principaux secteurs de lacote. Les 500 titres comptent également pour 80% de la capitalisation boursière totale du marché.
+^RUT	Russell 2000
+plus connus :
+MSFT    Microsoft Corporation (MSFT)
+FB      Facebook, Inc. (FB)
+AAPL    Apple Inc. (AAPL)
+,
+["^FCHI","^DJI","^IXIC","^N225","^FTSE","^GSPC","^RUT","MSFT","FB","AAPL"]
+
+liste des matieres premieres:
+GC=F   Gold Aug 20 (GC=F)
+SI=F	Silver Jul 20
+HG=F	Copper Jul 20	
+CL=F	Crude Oil Jul 20
+BZ=F	Brent Crude Oil Last Day Financ
+NG=F	Natural Gas Jul 20
+C=F	Corn Jul 20
+O=F	Oats Jul 20
+RR=F	Rough Rice Jul 20	
+CC=F	Cocoa Jul 20
+SB=F	Sugar #11 Jul 20
+OJ=F	Orange Juice Jul 20
+["GC=F","SI=F","HG=F","CL=F","BZ=F","NG=F","C=F","O=F","RR=F","CC=F","SB=F","OJ=F"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+
+	crypto: [{object1 },{object2}....]
+
+	Indice : [ ]
+
+	Matières premières : []
+
+	
+
+
+}
+
+
+
+q="https://api-pub.bitfinex.com/v2/tickers?symbols=ALL"
+
+Response Details
+
+
+SYMBOL		The symbol of the requested ticker data
+FRR	float	Flash Return Rate - average of all fixed rate funding over the last hour (funding tickers only)
+BID	float	Price of last highest bid
+BID_PERIOD	int	Bid period covered in days (funding tickers only)
+BID_SIZE	float	Sum of the 25 highest bid sizes
+ASK	float	Price of last lowest ask
+ASK_PERIOD	int	Ask period covered in days (funding tickers only)
+ASK_SIZE	float	Sum of the 25 lowest ask sizes
+DAILY_CHANGE	float	Amount that the last price has changed since yesterday
+DAILY_CHANGE_RELATIVE	float	Relative price change since yesterday (*100 for percentage change)
+LAST_PRICE	float	Price of the last trade
+VOLUME	float	Daily volume
+HIGH	float	Daily high
+LOW	float	Daily low
+FRR_AMOUNT_AVAILABLE	float	The amount of funding that is available at the Flash Return Rate (funding tickers only)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
