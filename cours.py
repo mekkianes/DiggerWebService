@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify,request
 import json
 import requests
 import yfinance as yf
@@ -7,6 +7,8 @@ from threading import Thread
 import sys, time
 
 
+appId="7b5b7317-d2c6-4df7-8708-4256a7f306a0"
+apiKey="MWI3ZjE3NGItYmRiMi00NDg5LWEwMDYtMjczOTQwMGU4MTNl"
 
 
 app = Flask(__name__)
@@ -17,7 +19,7 @@ c = conn.cursor()
 
 # Create table
 c.execute('''CREATE TABLE IF NOT EXISTS alerts 
-             (symbol text, value real, more INTEGER,treated INTEGER)''')
+             (symbol text, value real, more INTEGER,deviceId text,treated INTEGER)''')
 c.execute('DELETE FROM alerts')
 conn.commit()
 conn.close()
@@ -33,7 +35,7 @@ def market():
     """ recupération crypto"""
     response = requests.get("https://query1.finance.yahoo.com/v7/finance/quote?symbols=BTC-USD,ETH-USD,LTC-USD,USDT-USD,XRP-USD,BCH-USD,BNB-USD,EOS-USD,ADA-USD,TRX-USD,XLM-USD")
     bit = response.json()
-    crypto=[{"id":p["shortName"],"symbol":p["symbol"],"previousClose":p["regularMarketPreviousClose"],"marketOpen":p["regularMarketOpen"],"regularMarketPrice":p["regularMarketPrice"],"regularMarketChangePercent":p["regularMarketChangePercent"]} for p in  bit['quoteResponse']["result"] ]
+    crypto=[{"id":p["shortName"],"symbol":p["symbol"],"previousClose":p["regularMarketPreviousClose"],"marketOpen":p["regularMarketOpen"],"regularMarketPrice":p["regularMarketPrice"],"regularMarketChangePercent":p["regularMarketChangePercent"],"image":p["coinImageUrl"]} for p in  bit['quoteResponse']["result"] ]
     
     
     
@@ -42,7 +44,7 @@ def market():
     p=response.json()
     ind=[]
     for inf in p['quoteResponse']["result"] :
-        ind.append({"id":inf["shortName"],"symbol":inf["symbol"],"previousClose":inf["regularMarketPreviousClose"],"marketOpen":inf["regularMarketOpen"],"regularMarketPrice":inf["regularMarketPrice"],"regularMarketChangePercent":inf["regularMarketChangePercent"]})
+        ind.append({"id":inf["shortName"],"symbol":inf["symbol"],"previousClose":inf["regularMarketPreviousClose"],"marketOpen":inf["regularMarketOpen"],"regularMarketPrice":inf["regularMarketPrice"],"regularMarketChangePercent":inf["regularMarketChangePercent"],"image":""})
         
     """matieres premieres"""
     
@@ -50,7 +52,7 @@ def market():
     p=response.json()
     mp=[]
     for inf in p['quoteResponse']["result"] :
-        mp.append({"id":inf["shortName"],"symbol":inf["symbol"],"previousClose":inf["regularMarketPreviousClose"],"marketOpen":inf["regularMarketOpen"],"regularMarketPrice":inf["regularMarketPrice"],"regularMarketChangePercent":inf["regularMarketChangePercent"]})
+        mp.append({"id":inf["shortName"],"symbol":inf["symbol"],"previousClose":inf["regularMarketPreviousClose"],"marketOpen":inf["regularMarketOpen"],"regularMarketPrice":inf["regularMarketPrice"],"regularMarketChangePercent":inf["regularMarketChangePercent"],"image":""})
     
     cours ={"crypto":crypto,"indice":ind,"matieres premieres":mp}
     return jsonify(cours)
@@ -68,14 +70,33 @@ def test():
     conn.close()
     return jsonify(l)
 
-
-@app.route('/alert/<symbol>/<value>/<more>',methods=["GET","POST"])
-def alert(symbol,value,more):
+@app.route("/getalerts/")        
+def getalerts():                           
     conn = sqlite3.connect('alerts.db')
     c = conn.cursor()
-    c.execute("INSERT INTO alerts VALUES (?,?,?,?)",(symbol,value,more,0))
+    c.execute('SELECT * FROM alerts')
+    records=c.fetchall()
+    l=[]
+    for row in records:
+        l.append(row[:4])
+    conn.close()
+    return jsonify(l)
+
+@app.route("/req/",methods=["POST"])        
+def req():                           
+    data=request.json
+    print(data["stock"])
+
+
+@app.route('/saveAlert',methods=["POST"])
+def saveAlert():
+    data = request.json
+    conn = sqlite3.connect('alerts.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO alerts VALUES (?,?,?,?,?)",(data["stock"],data["value"],data["more"],data["deviceId"],0))
     conn.commit()
     conn.close()
+    return "Alert saved"
 
 
 def get_ticker(symbol):
@@ -94,8 +115,8 @@ def get_price(symbol):
 def send_notification(msg):
     header = {
             "Content-Type": "application/json; charset=utf-8",
-            "Authorization": "Basic my-rest-api-key "}
-    data = {    "app_id": "my-app-id",    "included_segments": ["All"],    "contents": {"msg": msg}}
+            "Authorization": apiKey}
+    data = {    "app_id": appID,    "included_segments": ["All"],    "contents": {"msg": msg}}
     requests.post(    "https://onesignal.com/api/v1/notifications",    headers=header,    json=data)
 
 
@@ -109,17 +130,27 @@ def handle_alert():
         c.execute('SELECT * FROM alerts')
         records=c.fetchall()
         l=[]
-        for row in records:
-            if(row[3]==0):
-                value=row[1]
-                symbol=row[0]
-                more=row[2]
-                price=get_price(symbol)
-                if (price > value):
-                    print("alert >= valeur precedente "+symbol+str(price==value))
-                    send_notification(symbol+" price > "+value +" current price: "+price)
+        if (records):
+            for row in records:
+                if(row[4]==0):
+                    value=row[1]
+                    symbol=row[0]
+                    more=row[2]
+                    userid=row[3]
+                    try:
+                        price=get_price(symbol)
+                    except:
+                        print("symbol not found")
+                    if (more!=0):    
+                        if (price > value):
+                            send_notification(symbol+" price > "+value +" current price: "+price)
+                    else:
+                        if (price < value):
+                            send_notification(symbol+" price < "+value +" current price: "+price)
+                    
+                    
         conn.close()
-        time.sleep(10)
+        time.sleep(20)
 
 ThreadAlrt=Thread(target=handle_alert, args=())
 ThreadAlrt.start()
@@ -131,7 +162,7 @@ ThreadAlrt.start()
 
 
 if __name__ == "__main__":        # on running python app.py
-    app.run(debug=True, port=5000,threaded=True)
+    app.run(debug=True, port=5002,threaded=True)
 
 
 
