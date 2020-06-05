@@ -1,19 +1,29 @@
 //pip install yfinance
 
 
-préutilisation: 
+
+serveur distant:
+http://93603a0040b5.ngrok.io/
+
+
+
+pré-utilisation: 
 
 pip3 install yfinance
 pip3 install lxml
 
 
+hashtable des noms:symboles:
+
+{"Bitcoin":"BTC-USD","Ethereum":"ETH-USD","Litecoin":"LTC-USD","Tether":"USDT-USD","XRP":"XRP-USD","Bitcoin Cash":"BCH-USD","Binance":"BNB-USD","EOS":"EOS-USD"
+,"Cardano":"ADA-USD","TRON":"TRX-USD","Stellar":"XLM-USD","CAC 40":"^FCHI","Dow Jones":"^DJI","NASDAQ":"^IXIC","Nikkei":"^N225","FTSE":"^FTSE","S&P":"^GSPC",
+"Russell":"^RUT","Microsoft":"MSFT","Facebook":"FB","Apple":"AAPL","Gold":"GC=F","Silver":"SI=F","Copper":"HG=F","Crude Oil":"CL=F","Brent Crude Oil":"BZ=F",
+"Natural Gas":"NG=F","Corn":"C=F","Oats":"O=F","Rough Rice":"RR=F","Cocoa":"CC=F","Sugar":"SB=F","Orange Juice":"OJ=F"}
 
 
+Liste des crypto monnaie:
 
-Liste des crypto monnaie
 https://api-pub.bitfinex.com/v2/tickers?symbols=tBTCUSD,tLTCBTC,tETHBTC,tXRPUSD,tBSVBTC,tEOSUSD,tZECUSD,tXMRUSD
-
-
 tBTCUSD bitcoin
 tLTCBTC litcoin
 tETHBTC eutherium
@@ -23,7 +33,11 @@ tZECUSD Zcash
 tXMRUSD Monero
 tXRPUSD Ripple
 
+
+
+
 liste des indices boursiers :
+
 ^FCHI	CAC 40
 ^DJI	Dow Jones	
 ^IXIC	Nasdaq Le Nasdaq composite (National Association of Securities Dealers Automated
@@ -35,10 +49,11 @@ plus connus :
 MSFT    Microsoft Corporation (MSFT)
 FB      Facebook, Inc. (FB)
 AAPL    Apple Inc. (AAPL)
-,
 ["^FCHI","^DJI","^IXIC","^N225","^FTSE","^GSPC","^RUT","MSFT","FB","AAPL"]
 
+
 liste des matieres premieres:
+
 GC=F   Gold Aug 20 (GC=F)
 SI=F	Silver Jul 20
 HG=F	Copper Jul 20	
@@ -56,19 +71,7 @@ OJ=F	Orange Juice Jul 20
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+Json response:
 
 {
 
@@ -76,10 +79,7 @@ OJ=F	Orange Juice Jul 20
 
 	Indice : [ ]
 
-	Matières premières : []
-
-	
-
+	Matières premières : []	
 
 }
 

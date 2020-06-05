@@ -78,9 +78,24 @@ def getalerts():
     records=c.fetchall()
     l=[]
     for row in records:
-        l.append(row[:4])
+        
+        l.append({"stock":row[0],"value":row[1],"more":(row[2]==1),"deviceId":row[3]})
     conn.close()
     return jsonify(l)
+
+@app.route("/getalertsUsr/<user>")        
+def getalertsUsr(user):                           
+    conn = sqlite3.connect('alerts.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM alerts WHERE deviceId = '%s'" % user)
+    records=c.fetchall()
+    l=[]
+    for row in records:
+        
+        l.append({"stock":row[0],"value":row[1],"more":(row[2]==1),"deviceId":row[3]})
+    conn.close()
+    return jsonify(l)
+
 
 @app.route("/req/",methods=["POST"])        
 def req():                           
@@ -91,9 +106,13 @@ def req():
 @app.route('/saveAlert',methods=["POST"])
 def saveAlert():
     data = request.json
+    if (data["more"]==True):
+        more=1
+    else:
+        more=0
     conn = sqlite3.connect('alerts.db')
     c = conn.cursor()
-    c.execute("INSERT INTO alerts VALUES (?,?,?,?,?)",(data["stock"],data["value"],data["more"],data["deviceId"],0))
+    c.execute("INSERT INTO alerts VALUES (?,?,?,?,?)",(data["stock"],data["value"],more,data["deviceId"],0))
     conn.commit()
     conn.close()
     return "Alert saved"
